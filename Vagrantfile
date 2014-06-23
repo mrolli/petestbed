@@ -13,12 +13,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     master.vm.network "private_network", ip: "192.168.10.30"
     master.vm.network "forwarded_port", guest: 443, host: 8843
     master.vm.provider "virtualbox" do |vb|
-      vb.name = "master01.ubelix.unibe.ch"
+      vb.name = "puppet01.ubelix.unibe.ch"
       vb.customize ["modifyvm", :id, "--name", "puppet01"]
       vb.customize ["modifyvm", :id, "--memory", "2048"]
       vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
     end
-    master.vm.provision "shell", path: "bootstrap_master.sh"
+    master.vm.provision "shell", path: "bootstrap_master.sh", args: "3600"
   end
 
   (1..4).each do |index|

@@ -2,6 +2,9 @@
 
 hash yum 2>/dev/null && ISEL=1 || ISEL = 0
 
+# Put the hosts file in place
+cat /vagrant/hosts.snippet >> /etc/hosts
+
 # Install git
 if hash git 2>/dev/null; then
   echo "Git already installed."
@@ -12,6 +15,14 @@ else
   else
     apt-get -y install git >/dev/null 2>&1
   fi
+fi
+
+# Register the node at the puppet master.
+if [ -x /opt/puppet/bin/puppet ]; then
+  echo "Puppet agent already installed."
+else
+  echo "Installing puppet and registering to puppet master."
+  curl -k https://puppet01.ubelix.unibe.ch:8140/packages/current/install.bash 2>/dev/null | bash
 fi
 
 echo "Provisioning done. Have fun!"
