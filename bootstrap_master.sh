@@ -5,7 +5,13 @@ SESSION_LIFETIME=$1
 hash yum 2>/dev/null && ISEL=1 || ISEL=0
 
 # Put the hosts file in place
-cat /vagrant/hosts.snippet >> /etc/hosts
+grep "node" /etc/hosts >/dev/null 3>&1
+if [ $? -eq 0 ]; then
+  echo "Hosts file already patched."
+else
+  echo "Patching hosts file"
+  cat /vagrant/hosts.snippet >> /etc/hosts
+fi
 
 # Install git
 if hash git 2>/dev/null; then
