@@ -1,7 +1,7 @@
 .idea/
 .vagrant/
-hiera_environment/
+hiera-environment/
 iml_stuff/
 modules/*
 puppet-enterprise/*
-puppet_repository/
+puppet-repository/
