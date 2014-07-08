@@ -1,17 +1,11 @@
 #!/usr/bin/env bash
 
-SESSION_LIFETIME=$1
+PE_VERSION=$1
+PLATFORM=$2
+SESSION_LIFETIME=$3
+
 
 hash yum 2>/dev/null && ISEL=1 || ISEL=0
-
-# Put the hosts file in place
-grep "node" /etc/hosts >/dev/null 3>&1
-if [ $? -eq 0 ]; then
-  echo "Hosts file already patched."
-else
-  echo "Patching hosts file"
-  cat /vagrant/hosts.snippet >> /etc/hosts
-fi
 
 # Install git
 if hash git 2>/dev/null; then
@@ -19,6 +13,8 @@ if hash git 2>/dev/null; then
 else
   echo -n "Installing Git."
   if [ $ISEL -eq 1 ]; then
+    service iptables stop
+    chkconfig iptables off
     yum -y install git >/dev/null 2>&1
   else
     apt-get -y install git >/dev/null 2>&1
@@ -26,25 +22,21 @@ else
 fi
 
 # Install puppet master
-if hash puppet 2>/dev/null; then
+if [ -x /opt/puppet/bin/puppet ]; then
   echo "Puppet Enterprise already installed and setup."
 else
   echo "Installing Puppet Master"
   OLDDIR=$PWD
-  if [ $ISEL -eq 1 ]; then
-    cd /vagrant/puppet-enterprise/puppet-enterprise-3.2.3-el-6-x86_64/
-  else
-    cd /vagrant/puppet-enterprise/puppet-enterprise-3.2.3-ubuntu-12.04-amd64
-  fi
-  ./puppet-enterprise-installer -a ../pe_ubelix_answerfile
+  cd /vagrant/pe/puppet-enterprise-$PE_VERSION-$PLATFORM
+  ./puppet-enterprise-installer -a ../../pe_answerfile
   cd $OLDDIR;
 fi
 
 # Add some additional platform using the Rake API
 # @see http://docs.puppetlabs.com/pe/latest/console_rake_api.html
 # If platform already availabe the task gets skipped.
-if [ -f /opt/staging/pe_repo/puppet-enterprise-3.2.3-el-6-x86_64-agent.tar.gz ]; then
-  echo "Agent support for el6-6-x86_64 already available."
+if [ -f /opt/staging/pe_repo/puppet-enterprise-$PE_VERSION-el-6-x86_64-agent.tar.gz ]; then
+   echo "Agent support for el6-6-x86_64 already available."
 else
   echo "Adding platform support for EL6-x86_64"
   /opt/puppet/bin/rake -f /opt/puppet/share/puppet-dashboard/Rakefile RAILS_ENV=production nodeclass:add["pe_repo::platform::el_6_x86_64","skip"] 2>/dev/null
@@ -53,7 +45,7 @@ else
   echo "Done adding platform support for EL6-x86_64"
 fi
 
-if [ -f /opt/staging/pe_repo/puppet-enterprise-3.2.3-ubuntu-12.04-amd64-agent.tar.gz ]; then
+if [ -f /opt/staging/pe_repo/puppet-enterprise-$PE_VERSION-ubuntu-12.04-amd64-agent.tar.gz ]; then
   echo "Agent support for ubuntu-12.04-amd64 already available."
 else
   echo "Adding platform support for Ubuntu-12.04-amd64"
@@ -63,8 +55,8 @@ else
   echo "Done adding platform support for Ubuntu-12.04-amd64"
 fi
 
-#if [ -f /opt/staging/pe_repo/puppet-enterprise-3.2.3-ubuntu-12.04-amd64-agent.tar.gz ]; then
-#  echo "Agent support for ubuntu-12.04-amd64 already available."
+#if [ -f /opt/staging/pe_repo/puppet-enterprise-$PE_VERSION-ubuntu-14.04-amd64-agent.tar.gz ]; then
+#  echo "Agent support for ubuntu-14.04-amd64 already available."
 #else
 #  echo "Adding platform support for Ubuntu-14.04-amd64"
 #  /opt/puppet/bin/rake -f /opt/puppet/share/puppet-dashboard/Rakefile RAILS_ENV=production nodeclass:add["pe_repo::platform::ubuntu_1404_amd64","skip"] 2>/dev/null

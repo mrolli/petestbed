@@ -8,7 +8,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "centos-6.5-x86_64"
 
   config.vm.define "master" do |master|
-    master.vm.box = "ubuntu-12.04-server-x86_64"
     master.vm.host_name = "puppet01.ubelix.unibe.ch"
     master.vm.network "private_network", ip: "192.168.10.30"
     master.vm.network "forwarded_port", guest: 443, host: 8843
@@ -18,7 +17,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       vb.customize ["modifyvm", :id, "--memory", "2048"]
       vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
     end
-    master.vm.provision "shell", path: "bootstrap_master.sh", args: "3600"
+    master.vm.provision :hosts
+    # args: <pe-pkg-version> <pe-pkg-platform> <console-session-timeout>
+    master.vm.provision "shell", path: "bin/bootstrap_master.sh", args: "3.2.3 el-6-x86_64 3600"
   end
 
   (1..4).each do |index|
@@ -31,7 +32,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         vb.customize ["modifyvm", :id, "--memory", "512"]
         vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
       end
-      node.vm.provision "shell", path: "bootstrap_node.sh"
+      node.vm.provision :hosts
+      node.vm.provision "shell", path: "bin/bootstrap_node.sh"
     end
   end
 end

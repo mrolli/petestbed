@@ -3,5 +3,6 @@
 hiera-environment/
 iml_stuff/
 modules/*
-puppet-enterprise/*
+pe/*
 puppet-repository/
+atlassian-ide-plugin.xml

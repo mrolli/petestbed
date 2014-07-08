@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+for i in {1..4}; do
+  ssh node0$i "puppet agent -t"
+done
