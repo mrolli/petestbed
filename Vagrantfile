@@ -50,6 +50,19 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     grid.vm.provision "shell", path: "bin/bootstrap_node.sh", args: "3.3.1 el-6-x86_64 3600"
   end
 
+  config.vm.define "service" do |service|
+    service.vm.host_name = "service01.ubelix.unibe.ch"
+    service.vm.network "private_network", ip: "192.168.10.42"
+    service.vm.provider "virtualbox" do |vb|
+      vb.name = "service01.ubelix.unibe.ch"
+      vb.customize ["modifyvm", :id, "--name", "service01"]
+      vb.customize ["modifyvm", :id, "--memory", "2048"]
+      vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
+    end
+    service.vm.provision :hosts
+    # args: <pe-pkg-version> <pe-pkg-platform> <console-session-timeout>
+    service.vm.provision "shell", path: "bin/bootstrap_node.sh", args: "3.3.1 el-6-x86_64 3600"
+  end
 
   (1..2).each do |index|
     config.vm.define "fnode0#{index}" do |node|
