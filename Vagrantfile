@@ -19,7 +19,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
     master.vm.provision :hosts
     # args: <pe-pkg-version> <pe-pkg-platform> <console-session-timeout>
-    master.vm.provision "shell", path: "bin/bootstrap_master.sh", args: "3.3.1 el-6-x86_64 3600"
+    master.vm.provision "shell", path: "bin/bootstrap_master.sh", args: "3.3.2 el-6-x86_64 3600"
   end
 
   config.vm.define "gridadmin" do |gridadmin|
@@ -32,8 +32,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
     end
     gridadmin.vm.provision :hosts
-    # args: <pe-pkg-version> <pe-pkg-platform> <console-session-timeout>
-    gridadmin.vm.provision "shell", path: "bin/bootstrap_node.sh", args: "3.3.1 el-6-x86_64 3600"
+    gridadmin.vm.provision "shell", path: "bin/bootstrap_node.sh"
   end
 
   config.vm.define "grid" do |grid|
@@ -46,8 +45,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
     end
     grid.vm.provision :hosts
-    # args: <pe-pkg-version> <pe-pkg-platform> <console-session-timeout>
-    grid.vm.provision "shell", path: "bin/bootstrap_node.sh", args: "3.3.1 el-6-x86_64 3600"
+    grid.vm.provision "shell", path: "bin/bootstrap_node.sh"
   end
 
   config.vm.define "service" do |service|
@@ -60,8 +58,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root", "1"]
     end
     service.vm.provision :hosts
-    # args: <pe-pkg-version> <pe-pkg-platform> <console-session-timeout>
-    service.vm.provision "shell", path: "bin/bootstrap_node.sh", args: "3.3.1 el-6-x86_64 3600"
+    service.vm.provision "shell", path: "bin/bootstrap_node.sh"
   end
 
   (1..2).each do |index|
