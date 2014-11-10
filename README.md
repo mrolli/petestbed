@@ -1,5 +1,7 @@
 # Puppet Master Test-Dev-Bed
 
+This project is currently obsolete and has been replaced by The Forman Test-Dev-Bed.
+
 ## Overview
 
 This repo sets up a local testing and developemnt environment using Vagrant and Virtualbox. Adjust values in the Vagrantfile/bootstrap according your environment.
@@ -9,6 +11,7 @@ This repo sets up a local testing and developemnt environment using Vagrant and 
 The environment by default sets up
 * a puppet master by installing a PE on a VM
 * 4 nodes registered to the puppet master
+* the following infra nodes: gridadmin01, service01, grid02
 
 ## Requirements
 
