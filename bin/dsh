@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
-for i in {1..4}; do
-  ssh node0$i "puppet agent -t"
+ssh gridadmin01 "puppet agent -t"
+ssh grid02 "puppet agent -t"
+ssh service01 "puppet agent -t"
+
+for i in {1..2}; do
+  ssh fnode$i "puppet agent -t"
+  ssh hnode0$i "puppet agent -t"
 done
