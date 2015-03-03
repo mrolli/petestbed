@@ -22,6 +22,12 @@ To setup the above requirements run the following commands:
 
     vagrant plugin install vagrant-hosts
 
+Test entry:
+
+```puppet
+    class { 'root': }
+```
+
 ## Copyright and License
 
 This software is licensed under the MIT license. The license is provided in the [license file](https://github.com/mrolli/petestbed/blob/master/LICENSE).
